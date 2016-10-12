@@ -1,7 +1,11 @@
 //import 'babel-polyfill';
 import PIXI from 'pixi.js';
 
-const renderer = PIXI.autoDetectRenderer
+let renderer;
+let stage;
+let image;
+let truth;
+let mask;
 
 PIXI.loader
         .add("assets/image.jpg")
@@ -9,13 +13,24 @@ PIXI.loader
         .load(onAssetsLoaded);
 
 function onAssetsLoaded(){
-    const image = PIXI.Sprite.from("assets/image.jpg");
-    const truth = PIXI.Sprite.from("assets/truth.jpg");
+    image = PIXI.Sprite.from("assets/image.jpg");
+    truth = PIXI.Sprite.from("assets/truth.jpg");
+    mask = new PIXI.Graphics().beginFill(0).drawCircle(0, 0, 150);
+    truth.mask = mask;
 
-    const renderer = PIXI.autoDetectRenderer(image.width, image.height);
-    const stage = new PIXI.Container();
+    renderer = PIXI.autoDetectRenderer(image.width, image.height);
+    stage = new PIXI.Container();
     stage.addChild(image);
+    stage.addChild(truth);
+    stage.addChild(mask);
 
     document.body.appendChild(renderer.view);
+
+    update();
+}
+
+function update(){
+    mask.position.copy(renderer.plugins.interaction.mouse.global);
     renderer.render(stage);
+    requestAnimationFrame(update);
 }
