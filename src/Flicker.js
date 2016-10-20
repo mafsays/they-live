@@ -23,7 +23,7 @@ export default class Flicker {
             if( this._on ){
                 this._count = this._getInterval( this.minInterval, this.maxInterval );
                 this._on = false;
-                return -1;
+                return -1
             } else {
                 this._count = this._getInterval( this.minDuration, this.maxDuration );
                 this._on = true;
