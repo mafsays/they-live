@@ -4,8 +4,9 @@ import Spring from './Spring';
 export default class Glitch{
 
     constructor( containerSprite, displacementTexture ){
-        let displacementSprite = new PIXI.Sprite(displacementTexture);
-        displacementSprite.scale.y = 2;
+        //let displacementSprite = new PIXI.Sprite(displacementTexture);
+        let displacementSprite = new PIXI.extras.TilingSprite( displacementTexture, containerSprite.width, containerSprite.height );
+        //displacementSprite.scale.y = 2;
         let displacementFilter = new PIXI.filters.DisplacementFilter( displacementSprite );
         containerSprite.addChildAt( displacementSprite, 0 );
         containerSprite.filters = [displacementFilter];
@@ -17,7 +18,7 @@ export default class Glitch{
         this.displacementFilter = displacementFilter;
         this.containerSprite = containerSprite;
         this.displacementSprite = displacementSprite;
-        this.resize();
+        //this.resize();
         this.enabled = true;
     }
 
@@ -42,7 +43,7 @@ export default class Glitch{
 
     glitch(){
         this.spring.twang(
-            5 + Math.random() * 10 * 0.75,
+            5 + Math.random() * 15,
             Math.random() * 5
         );
         this.count = Math.round( Math.random() * this.period );
