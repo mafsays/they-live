@@ -2,6 +2,7 @@
 import PIXI from 'pixi.js';
 import Spring from './Spring';
 import Flicker from './Flicker';
+import Glitch from './Glitch';
 
 let renderer;
 let stage;
@@ -10,6 +11,7 @@ let truth;
 let mask;
 let spring;
 let flicker;
+let glitch;
 
 PIXI.loader
         .add("assets/image.jpg")
@@ -34,10 +36,11 @@ function onAssetsLoaded(){
     stage.on('mousedown', pop );
 
 
-    spring = new Spring();
+    spring = new Spring({ damping: 0.85, springiness: 0.29 });
     const params = { children: 0 }
     flicker = new Flicker({children:0});
 
+    glitch = new Glitch( stage, PIXI.Texture.from("assets/glitch.png"));
 
     update();
 }
@@ -47,9 +50,22 @@ function update(){
     flicker.update();
     image.position.copy(spring.position);
     truth.position.copy(spring.position);
+
     truth.visible = flicker.on;
+    if( flicker.on ){
+        if ( !glitch.enabled ) {
+            glitch.enabled = true;
+            glitch.glitch();
+        }
+    } else {
+        glitch.enabled = false;
+    }
+    glitch.update();
+
+    stage.alpha = 0.9 + Math.random() * 0.1;
+
     console.log(image.x);
-    mask.position.copy(renderer.plugins.interaction.mouse.global);
+    //mask.position.copy(renderer.plugins.interaction.mouse.global);
     renderer.render(stage);
     requestAnimationFrame(update);
 }

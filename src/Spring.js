@@ -4,14 +4,14 @@ var tempVector = Vec2D.ObjectVector(0,0);
 
 export default class Spring {
 
-    constructor(){
+    constructor({ damping = 0.8, springiness = 0.1 } = {}){
         this._anchor = Vec2D.ObjectVector(0, 0);
         this._speed = Vec2D.ObjectVector(0, 0);
         this._offsetPosition = Vec2D.ObjectVector(0, 0);
         this.reset();
 
-        this._damping = 0.95; // 0 - 1 : 0 will not move, 1 will oscillate forever
-        this._springiness = 0.1; // higher value => firmer spring
+        this.damping = damping; // 0 - 1 : 0 will not move, 1 will oscillate forever
+        this.springiness = springiness; // higher value => firmer spring
 
         this._minSpeed = 0.01; // stops updates when values get meaningless
     }
@@ -88,6 +88,14 @@ export default class Spring {
 
     get offset(){
         return { x: this._offsetPosition.x, y: this._offsetPosition.y };
+    }
+
+    set damping(value){
+        this._damping = value;
+    }
+
+    set springiness(value){
+        this._springiness = value;
     }
 
 }
