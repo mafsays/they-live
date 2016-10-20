@@ -12,6 +12,7 @@ export default class Glitch{
 
         this.spring = new Spring({ damping: 0.85, springiness: 0.29 });
         this.count = 0;
+        this.count2 = 0;
         this.period = 200;
         this.displacementFilter = displacementFilter;
         this.containerSprite = containerSprite;
@@ -30,10 +31,12 @@ export default class Glitch{
 
             // TODO: flicker?
         }
+        this.count2 += 0.1;
         if( this.spring.isActive ){
             this.spring.update();
             this.displacementFilter.scale.x = this.spring.x;
-            this.displacementFilter.scale.y = this.spring.y;
+            //this.displacementFilter.scale.y = this.spring.y;
+            this.displacementFilter.scale.y = 1//2 + Math.sin(this.count2) * 2;
         }
     }
 

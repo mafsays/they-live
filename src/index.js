@@ -70,7 +70,7 @@ function onAssetsLoaded(){
     container.on('mousedown', pop );
 
 
-    spring = new Spring({ damping: 0.85, springiness: 0.29 });
+    spring = new Spring({ damping: 0.95, springiness: 0.1 });
     const params = { children: 0 }
     flicker = new Flicker({children:0});
 
@@ -95,7 +95,12 @@ function update(){
     }
     glitch.update();
 
-    screenContainer.alpha = 0.9 + Math.random() * 0.1;
+    glitchContainer.alpha = 0.9 + Math.random() * 0.1;
+    glitchContainer.position.copy( spring );
+    if( Math.random() < 0.02 )
+    {
+        spring.twang( Math.random() * 1, Math.random() * 1 );
+    }
 
     console.log(image.x);
     //mask.position.copy(renderer.plugins.interaction.mouse.global);
