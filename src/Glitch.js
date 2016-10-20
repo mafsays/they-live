@@ -32,14 +32,14 @@ export default class Glitch{
         }
         if( this.spring.isActive ){
             this.spring.update();
-            this.displacementFilter.scale.x = 1 + this.spring.x;
-            this.displacementFilter.scale.y = 1 + this.spring.y;
+            this.displacementFilter.scale.x = this.spring.x;
+            this.displacementFilter.scale.y = this.spring.y;
         }
     }
 
     glitch(){
         this.spring.twang(
-            5 + Math.random() * 10,
+            5 + Math.random() * 10 * 0.75,
             Math.random() * 5
         );
         this.count = Math.round( Math.random() * this.period );

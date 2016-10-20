@@ -6,42 +6,75 @@ import Glitch from './Glitch';
 
 let renderer;
 let stage;
+let container;
+let screenContainer;
+let glitchContainer;
 let image;
 let truth;
 let mask;
 let spring;
 let flicker;
 let glitch;
+let assets = ['image.jpg','glitch.png','pixeloverlay.png','tellyframe.png','tellyscreen.png','truth.jpg'];
 
-PIXI.loader
-        .add("assets/image.jpg")
-        .add("assets/truth.jpg")
-        .load(onAssetsLoaded);
+for( let asset of assets ){
+    PIXI.loader.add('assets/' + asset);
+}
+PIXI.loader.load(onAssetsLoaded);
 
 function onAssetsLoaded(){
-    image = PIXI.Sprite.from("assets/image.jpg");
-    truth = PIXI.Sprite.from("assets/truth.jpg");
-    mask = new PIXI.Graphics().beginFill(0).drawCircle(0, 0, 150);
-
-    renderer = PIXI.autoDetectRenderer(image.width, image.height);
+    let frame = PIXI.Sprite.from("assets/tellyframe.png");
+    renderer = PIXI.autoDetectRenderer(frame.width, frame.height);
     document.body.appendChild(renderer.view);
 
     stage = new PIXI.Container();
-    stage.addChild(image);
-    stage.addChild(truth);
-    //truth.mask = mask;
-    //stage.addChild(mask);
+    container = new PIXI.Container();
+    stage.addChild(container);
 
-    stage.interactive = true;
-    stage.on('mousedown', pop );
+    screenContainer = new PIXI.Container();
+    screenContainer.position.set(101, 85)
+    container.addChild(screenContainer);
+
+    glitchContainer = new PIXI.Container();
+    screenContainer.addChild(glitchContainer);
+
+    image = PIXI.Sprite.from("assets/image.jpg");
+    image.scale.set(0.81);
+    truth = PIXI.Sprite.from("assets/truth.jpg");
+    truth.scale.set(0.81);
+    glitchContainer.addChild(image);
+    glitchContainer.addChild(truth);
+
+    let pixels = new PIXI.extras.TilingSprite(PIXI.Texture.from('assets/pixeloverlay.png'), image.width, image.height);
+    pixels.blendMode = PIXI.BLEND_MODES.MULTIPLY;
+    pixels.alpha = 0.6;
+    screenContainer.addChild(pixels);
+
+    let screenSurface = PIXI.Sprite.from('assets/tellyscreen.png');
+    screenSurface.blendMode = PIXI.BLEND_MODES.MULTIPLY;
+    screenSurface.alpha = 0.6;
+    container.addChild(screenSurface);
+
+    container.addChild(frame);
+
+
+
+    mask = new PIXI.Graphics().beginFill(0).drawCircle(0, 0, 150);
+
+
+
+    //truth.mask = mask;
+    //container.addChild(mask);
+
+    container.interactive = true;
+    container.on('mousedown', pop );
 
 
     spring = new Spring({ damping: 0.85, springiness: 0.29 });
     const params = { children: 0 }
     flicker = new Flicker({children:0});
 
-    glitch = new Glitch( stage, PIXI.Texture.from("assets/glitch.png"));
-
+    glitch = new Glitch( screenContainer, PIXI.Texture.from("assets/glitch.png"));
     update();
 }
 
@@ -62,7 +95,7 @@ function update(){
     }
     glitch.update();
 
-    stage.alpha = 0.9 + Math.random() * 0.1;
+    screenContainer.alpha = 0.9 + Math.random() * 0.1;
 
     console.log(image.x);
     //mask.position.copy(renderer.plugins.interaction.mouse.global);
